@@ -2,36 +2,56 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
-
     body {
-      font-family: Verdana, sans-serif;
+      font-family: 'Roboto', Verdana, sans-serif;
       margin: 0;
-      background-color: lightgray;
+      background-color: #f5f5f5;
+      color: #333;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    .row > .column {
-      padding: 0 8px;
+    h2 {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #444;
+      color: white;
+      margin: 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .row:after {
-      content: "";
-      display: table;
-      clear: both;
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 10px;
     }
 
     .column {
-      float: left;
+      padding: 8px;
       width: 25%;
-      height: 40vh; /* Set column height to 40% of viewport */
-      overflow: hidden; /* Hide overflow to fit image within column */
+      height: 40vh;
+      overflow: hidden;
     }
 
-    /* The Modal (background) */
+    .column img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 5px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .column img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modal styling */
     .modal {
       display: none;
       position: fixed;
@@ -42,22 +62,22 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: black;
+      background-color: rgba(0, 0, 0, 0.8);
     }
 
-    /* Modal Content */
     .modal-content {
       position: relative;
-      background-color: #fefefe;
+      background-color: white;
       margin: auto;
       padding: 0;
       width: 90%;
       max-width: 1200px;
+      border-radius: 8px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     }
 
-    /* The Close Button */
     .close {
-      color: white;
+      color: #aaa;
       position: absolute;
       top: 10px;
       right: 25px;
@@ -67,8 +87,7 @@
 
     .close:hover,
     .close:focus {
-      color: #999;
-      text-decoration: none;
+      color: black;
       cursor: pointer;
     }
 
@@ -76,92 +95,66 @@
       display: none;
     }
 
-    .cursor {
-      cursor: pointer;
-    }
-
-    /* Next & previous buttons */
     .prev,
     .next {
       cursor: pointer;
       position: absolute;
       top: 50%;
+      transform: translateY(-50%);
       width: auto;
       padding: 16px;
-      margin-top: -50px;
       color: white;
       font-weight: bold;
-      font-size: 20px;
-      transition: 0.6s ease;
-      border-radius: 0 3px 3px 0;
-      user-select: none;
-      -webkit-user-select: none;
+      font-size: 18px;
+      transition: 0.3s;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 3px;
     }
 
-    /* Position the "next button" to the right */
+    .prev {
+      left: 10px;
+    }
+
     .next {
-      right: 0;
-      border-radius: 3px 0 0 3px;
+      right: 10px;
     }
 
-    /* On hover, add a black background color with a little bit see-through */
     .prev:hover,
     .next:hover {
       background-color: rgba(0, 0, 0, 0.8);
     }
 
-    /* Number text (1/3 etc) */
-    .numbertext {
-      color: #f2f2f2;
-      font-size: 12px;
-      padding: 8px 12px;
-      position: absolute;
-      top: 0;
-    }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Make image cover the column without distortion */
-      display: block;
-    }
-
     .caption-container {
       text-align: center;
-      background-color: black;
-      padding: 2px 16px;
+      padding: 10px 20px;
+      background-color: #222;
       color: white;
+      font-size: 14px;
     }
 
     .demo {
       opacity: 0.6;
-    }
-
-    .active,
-    .demo:hover {
-      opacity: 1;
-    }
-
-    img.hover-shadow {
+      border-radius: 5px;
       transition: 0.3s;
     }
 
-    .hover-shadow:hover {
-      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    .demo:hover,
+    .active {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
 
-<h2 style="text-align:center">Lightbox</h2>
+<h2>Lightbox Gallery</h2>
 
 <div class="row">
+  <!-- PHP to dynamically load images -->
   <?php
     $image_dir = "img/"; // Directory where images are stored
     $images = glob($image_dir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE); // Read all image files
 
     foreach ($images as $index => $image) {
-        // Display each image in the column div with onclick event for the lightbox
         echo '<div class="column">
                 <img src="' . $image . '" onclick="openModal();currentSlide(' . ($index + 1) . ')" class="hover-shadow cursor">
               </div>';
@@ -169,21 +162,17 @@
   ?>
 </div>
 
-
 <div id="myModal" class="modal">
-  <span class="close cursor" onclick="closeModal()">&times;</span>
+  <span class="close" onclick="closeModal()">&times;</span>
   <div class="modal-content">
-    
     <?php
       foreach ($images as $index => $image) {
-          // Display each image in the modal view with next/previous navigation
           echo '<div class="mySlides">
                   <div class="numbertext">' . ($index + 1) . ' / ' . count($images) . '</div>
                   <img src="' . $image . '" style="width:100%">
                 </div>';
       }
     ?>
-    
     <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
     <a class="next" onclick="plusSlides(1)">&#10095;</a>
 
@@ -191,14 +180,15 @@
       <p id="caption"></p>
     </div>
 
-    <?php
-      foreach ($images as $index => $image) {
-          // Thumbnails in the modal
-          echo '<div class="column">
-                  <img class="demo cursor" src="' . $image . '" style="width:100%" onclick="currentSlide(' . ($index + 1) . ')" alt="Image ' . ($index + 1) . '">
-                </div>';
-      }
-    ?>
+    <div class="row">
+      <?php
+        foreach ($images as $index => $image) {
+            echo '<div class="column">
+                    <img class="demo cursor" src="' . $image . '" onclick="currentSlide(' . ($index + 1) . ')" alt="Image ' . ($index + 1) . '">
+                  </div>';
+        }
+      ?>
+    </div>
   </div>
 </div>
 
@@ -211,7 +201,7 @@ function closeModal() {
   document.getElementById("myModal").style.display = "none";
 }
 
-var slideIndex = 1;
+let slideIndex = 1;
 showSlides(slideIndex);
 
 function plusSlides(n) {
@@ -223,21 +213,20 @@ function currentSlide(n) {
 }
 
 function showSlides(n) {
-  var i;
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("demo");
-  var captionText = document.getElementById("caption");
-  if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
-  for (i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";
-  dots[slideIndex-1].className += " active";
-  captionText.innerHTML = dots[slideIndex-1].alt;
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("demo");
+  let captionText = document.getElementById("caption");
+
+  if (n > slides.length) slideIndex = 1;
+  if (n < 1) slideIndex = slides.length;
+
+  for (i = 0; i < slides.length; i++) slides[i].style.display = "none";
+  for (i = 0; i < dots.length; i++) dots[i].className = dots[i].className.replace(" active", "");
+
+  slides[slideIndex - 1].style.display = "block";
+  dots[slideIndex - 1].className += " active";
+  captionText.innerHTML = dots[slideIndex - 1].alt;
 }
 </script>
 
