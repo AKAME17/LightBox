@@ -51,7 +51,6 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
-    /* Modal styling */
     .modal {
       display: none;
       position: fixed;
@@ -149,10 +148,9 @@
 <h2>Lightbox Gallery</h2>
 
 <div class="row">
-  <!-- PHP to dynamically load images -->
   <?php
-    $image_dir = "img/"; // Directory where images are stored
-    $images = glob($image_dir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE); // Read all image files
+    $image_dir = "img/"; 
+    $images = glob($image_dir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE); 
 
     foreach ($images as $index => $image) {
         echo '<div class="column">
